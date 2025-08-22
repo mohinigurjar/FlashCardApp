@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+// const tagSchema = mongoose.Schema({name: String});
 const cardSchema = mongoose.Schema({
     question: {
         type: String,
@@ -11,7 +11,7 @@ const cardSchema = mongoose.Schema({
         type: Boolean,
     },
     tags: {
-        type: Array,
+        type: [String],
     }
 })
 
