@@ -48,13 +48,16 @@ app.patch('/flashcard', async(req, res) => {
     const cardId = req.body.cardId;
     const data = req.body;
     try{     
-        const card = await Card.findByIdAndUpdate({_id : cardId}, data);
+        const card = await Card.findByIdAndUpdate({_id : cardId}, data, {upsert: true});
         res.send("card updated successfully");
         // console.log(card);
     }catch(err){
         res.status(400).send("Updation failed" + err.message);
     }
 })
+
+//update or insert if not exist
+app.update
 
 //creating a new instance of the user model
 app.post('/signup', async(req, res) => {
