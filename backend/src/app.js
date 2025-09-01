@@ -7,6 +7,31 @@ const Card = require('./models/flashcard');
 
 app.use(express.json());
 
+app.post('/signup', async(req, res) => {
+    const user = new User(req.body);
+    // console.log(user);
+    try{
+        const saved = await user.save();
+        console.log("hii");
+        res.send("User added successfully")
+    }catch(error){
+        res.status(500).send("Error sending request" + error.message);
+    }
+})
+
+app.delete('/users', async(req, res) => {
+    const users = User.find({name: "Mohini"});
+
+    try{
+        const del = await User.deleteMany(users);
+        res.send("deleted users");
+
+    }catch(err){
+        res.status(500).send("Something went wrong")
+
+    }
+
+})
 //creating a new instance of the flashcard model
 app.post('/flashcard', async(req, res) => {
     const flashcard = new Card(req.body);
@@ -43,7 +68,7 @@ app.delete('/flashcard', async(req, res) => {
     }
 })
 
-//updating particular field
+//updating particular field or add if not already exists
 app.patch('/flashcard', async(req, res) => {
     const cardId = req.body.cardId;
     const data = req.body;
@@ -56,20 +81,10 @@ app.patch('/flashcard', async(req, res) => {
     }
 })
 
-//update or insert if not exist
-app.update
+
 
 //creating a new instance of the user model
-app.post('/signup', async(req, res) => {
-    const user = new User(req.body)
 
-    try{
-    const saved = await user.save();
-    res.send("User added successfully")
-    }catch(error){
-        res.status(400).send("Error sending request" + error.message);
-    }
-})
 
 connectDB().then(() => {
     console.log("connection established");

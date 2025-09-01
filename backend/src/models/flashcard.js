@@ -15,12 +15,11 @@ const cardSchema = mongoose.Schema({
     tags: {
         type: [String],
         required: true,
-        default: "important",
     },
     
 }, 
-{
-        timestamps: true,
+   {
+    timestamps: true,
     })
 
 const Card = mongoose.model("Card", cardSchema);

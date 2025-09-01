@@ -1,28 +1,37 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
+
 const userSchema = mongoose.Schema({
     name: {
         type: String,
-        required: true,
         minLength: 4,
         maxLength: 20
     },
     email: {
         type: String,
-        lowercase: true,
-        unique: true,
         required: true,
-        trim: true
+        lowercase: true,
+        trim: true,
+        unique: true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("Invalid Credentials");
+            }
+        },
     },
     password: {
         type: String,
         required: true,
         minLength: 8,
-        maxLength: 15,
-        // valid(value){
-        //     if
-        // }
+        maxLength: 15,  
+        validate(value) {
+            if(!validator.isStrongPassword(value)){
+                throw new Error("Invalid Credentials");
+            }
+        }    
     }
-});
+},
+{timestamps : true});
 
 
 
