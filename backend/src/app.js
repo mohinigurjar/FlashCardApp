@@ -1,5 +1,6 @@
 const express = require("express");
 const connectDB = require("./config/database")
+const { validateSignUpData } = require("./utils/validation")
 const app = express();
 
 const User = require('./models/users');
@@ -8,14 +9,19 @@ const Card = require('./models/flashcard');
 app.use(express.json());
 
 app.post('/signup', async(req, res) => {
-    const user = new User(req.body);
-    // console.log(user);
+    
+    
+    // const user = new User(req.body); //bad practice to take the data as input instead take particular fields
+  
     try{
-        const saved = await user.save();
+        validateSignUpData(req);
+        const {name, email, password} = req.body;
+        const user = new User({name, email, password});
+        await user.save();
         console.log("hii");
         res.send("User added successfully")
     }catch(error){
-        res.status(500).send("Error sending request" + error.message);
+        res.status(500).send("ERROR : " + error.message);
     }
 })
 
