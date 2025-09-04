@@ -5,13 +5,14 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const { validateSignUpData } = require("./utils/validation")
+const { userAuth } = require("./middlewares/auth")
 const app = express();
 
 const User = require('./models/users');
 const Card = require('./models/flashcard');
 
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.post('/signup', async(req, res) => {
     // const user = new User(req.body); //bad practice to take the data as input instead take particular fields
@@ -19,9 +20,10 @@ app.post('/signup', async(req, res) => {
     try{
         validateSignUpData(req);
         const {name, email, password} = req.body;
-        //encrypt password
+        //encrypt password 
+        //the operation we have to perform on all users--can convert it into a method in schema
         const hashPassword = await bcrypt.hash(password, 10);
-        console.log(hashPassword);
+        // console.log(hashPassword);
         const user = new User({name, email, password: hashPassword});
         await user.save();
         // console.log("hii");
@@ -35,22 +37,24 @@ app.post('/login', async(req, res) => {
     try{
         const {email, password} = req.body;
         const user = await User.findOne({email: email});
+        
         //cannot store the og passwords to the database so we have to encrypt that using bcrypt
         if(!user){ //checking if the user with the current email exists in the database or not
             throw new Error("Invalid credentials");
         }
 
-        // //password is compared here
-        const isPasswordValid = await bcrypt.compare(password, user.password)
+        // //password is compared here ---for every user so we can make a method in schema for the same
+        const isPasswordValid = await user.validatePassword(password);
         
         if(isPasswordValid){
             
             // const token = 'jyfjytdtdrfjhgkjgkikuyddgjhggkjhk';
 
             //create jwt token
-            const token = jwt.sign({_id: user._id}, "SECRETKEY**234", {expiresIn : "1h"});
+            //every user has its own unique token - create a method in schema to generate token
+            const token = await user.getJWT();
             // console.log(token);
-            res.cookie('token', token); 
+            res.cookie('token', token, {expires : new Date(Date.now() + 7 * 86400000)}); 
             res.send("Login successfully!!");
         }
         else{
@@ -63,7 +67,7 @@ app.post('/login', async(req, res) => {
     }
 })
 
-app.delete('/users', async(req, res) => {
+app.delete('/users',async(req, res) => {
     const users = User.find({name: "Mohini"});
 
     try{
@@ -77,35 +81,11 @@ app.delete('/users', async(req, res) => {
 
 })
 
-app.get('/profile', async(req, res) => {
+app.get('/profile', userAuth, async(req, res) => {
     try{
-
-        //reading cookies
-        const cookies = req.cookies;
-        //validation logic
-
-        //getting token from the cookie
-        const {token} = cookies; 
-        if(!token){
-            throw new Error("Invalid token");
-        }
-         
-        //verifies the token and decodes payload 
-        const decodedmsg = await jwt.verify(token, "SECRETKEY**234");
-        console.log(decodedmsg); 
- 
-        //destructuring used to get the id of the user
-        const { _id } = decodedmsg;
-
-        const user = await User.findById(_id);
-        if(!user){
-            throw new Error("User not found");
-        }
+        const user = req.user;
         res.send(user);
 
-        
-        // console.log(cookies); //gives back the cookie
-        // res.send("Reading cookie");
     }catch(error) {
         res.status(400).send("ERROR : " + error.message);
 
