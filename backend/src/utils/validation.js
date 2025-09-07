@@ -13,6 +13,26 @@ const validateSignUpData = (req) => {
     }
 }
 
+const validateFlashcardData = (req) => {
+    const {question, answer, tags, bookmarked} = req.body;
+    if(!question){
+        throw new Error("Please enter question");
+    }
+    else if(!answer){
+        throw new Error("Please enter answer");
+    }
+    else if(!tags){
+        throw new Error("Please enter tags");
+    }
+    else if(tags.length > 7){
+        throw new Error("Maximum 7 tags are allowed");
+    }
+    else if(bookmarked !== undefined && typeof bookmarked !== "boolean"){
+        throw new Error("Bookmarked must be a boolean");
+    }
+}
+
 module.exports = {
     validateSignUpData,
+    validateFlashcardData,
 }
