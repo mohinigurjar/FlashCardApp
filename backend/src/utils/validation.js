@@ -32,7 +32,17 @@ const validateFlashcardData = (req) => {
     }
 }
 
+validateEditProfileData = (req) => {
+    const allowedEditFields = ["name", "email"];
+
+    const isEditAllowed = Object.keys(req.body).every(field => 
+        allowedEditFields.includes(field));
+
+    return isEditAllowed;
+}
+
 module.exports = {
     validateSignUpData,
     validateFlashcardData,
+    validateEditProfileData
 }
