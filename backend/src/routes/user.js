@@ -1,13 +1,14 @@
 const express = require("express");
 const userRouter = express.Router();
-const { validateEditProfileData } = require("../utils/validation")
+const bcrypt = require('bcrypt');
+const { validateEditProfileData, validatePassword } = require("../utils/validation")
+const User = require('../models/users');
 const { userAuth } = require("../middlewares/auth");
 
 userRouter.get('/profile', userAuth, async(req, res) => {
     try{
         const user = req.user;
         
-        // Send only safe user data (exclude password and sensitive info)
         const userProfile = {
             _id: user._id,
             name: user.name,
@@ -22,9 +23,7 @@ userRouter.get('/profile', userAuth, async(req, res) => {
         res.status(400).send("ERROR : " + error.message);
 
     }
-  
 })
-
 userRouter.patch('/profile/edit', userAuth, async(req, res) => {
     try{
         if(!validateEditProfileData(req)){
@@ -46,6 +45,34 @@ userRouter.patch('/profile/edit', userAuth, async(req, res) => {
     
 })
 
+userRouter.patch('/profile/password', userAuth, async(req, res) => {
+
+    try{
+        const user = req.user;
+        const {oldPassword, newPassword} = req.body;
+
+        if(!oldPassword || !newPassword) {
+            return res.status(400).send("oldpassword and newpassword are required")
+        }
+        const isPasswordValid = await user.validatePassword(oldPassword);
+
+        if(!isPasswordValid){
+            return res.status(400).send("Invalid old password");
+        }
+
+        // Update the password
+        const passwordHash = await bcrypt.hash(newPassword, 10);
+        user.password = passwordHash;
+
+        await user.save();
+
+        res.status(200).send("Password updated successfully");
+        
+    }catch(error){
+        res.status(400).send("ERROR : " + error.message);
+    }
+
+})
 // userRouter.patch('/profile/password', userAuth, async(req, res) => {
 //     try{
 //         const user = req.user;
