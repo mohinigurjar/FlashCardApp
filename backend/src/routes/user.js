@@ -2,7 +2,7 @@ const express = require("express");
 const userRouter = express.Router();
 const bcrypt = require('bcrypt');
 const { validateEditProfileData, validatePassword } = require("../utils/validation")
-const User = require('../models/users');
+
 const { userAuth } = require("../middlewares/auth");
 
 userRouter.get('/profile', userAuth, async(req, res) => {
@@ -15,8 +15,7 @@ userRouter.get('/profile', userAuth, async(req, res) => {
             email: user.email,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
-        };
-        
+        };  
         res.send(userProfile);
 
     }catch(error) {
@@ -24,6 +23,7 @@ userRouter.get('/profile', userAuth, async(req, res) => {
 
     }
 })
+
 userRouter.patch('/profile/edit', userAuth, async(req, res) => {
     try{
         if(!validateEditProfileData(req)){
