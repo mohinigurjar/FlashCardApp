@@ -4,13 +4,7 @@ const Register = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md space-y-8 mb-20">
-        {/* Logo + Heading */}
         <div className="text-center">
-          {/* <img
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-            alt="FlashLearn"
-            className="mx-auto h-12 w-12"
-          /> */}
           <h1 className="mt-2 text-2xl font-bold text-gray-900">FlashLearn</h1>
           <p className="text-sm text-gray-600">Start your learning journey today</p>
         </div>
@@ -22,8 +16,7 @@ const Register = () => {
           </h2>
          <br></br>
 
-          <form className="space-y-4">
-            {/* Username */}
+          <form className="space-y-4"> 
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                 Username
@@ -40,8 +33,6 @@ const Register = () => {
                 />
               </div>
             </div>
-
-            {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email

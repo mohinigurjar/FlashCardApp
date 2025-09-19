@@ -1,16 +1,33 @@
 import { Mail, Lock } from "lucide-react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../services/api";
 
 const Login = () => {
+
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      const response = await loginUser({ email, password });
+      localStorage.setItem("token", response.data.token);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login failed:", error);
+      setError("Invalid email or password");
+    }
+  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md space-y-8">
         {/* Logo + Heading */}
         <div className="text-center">
-          {/* <img
-            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-            alt="FlashLearn"
-            className="mx-auto h-12 w-12"
-          /> */}
           <h1 className="mt-2 text-2xl font-bold text-gray-900">FlashLearn</h1>
           <p className="text-sm text-gray-600">Welcome back, sign in to continue</p>
         </div>
@@ -22,7 +39,7 @@ const Login = () => {
           </h2>
          <br></br>
 
-          <form className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -35,7 +52,9 @@ const Login = () => {
                   id="email"
                   name="email"
                   placeholder="Enter your email"
+                  onChange={(e) => setEmail(e.target.value)}
                   required
+                  value = {email}
                   className="block w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                 />
               </div>
@@ -53,7 +72,9 @@ const Login = () => {
                   id="password"
                   name="password"
                   placeholder="Enter your password"
+                  onChange = {(e) => setPassword(e.target.value)}
                   required
+                  value={password}
                   className="block w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                 />
               </div>
@@ -79,7 +100,7 @@ const Login = () => {
           <p className="mt-6 text-center text-sm text-gray-600">
             Don’t have an account?{" "}
             <a href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-              Register here
+              Sign up
             </a>
           </p>
         </div>
