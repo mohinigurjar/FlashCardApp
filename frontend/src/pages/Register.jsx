@@ -2,36 +2,49 @@ import { User, Mail, Lock } from "lucide-react";
 import { useState, usestate } from 'react';
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/api";
+import { validateSignUpData } from "../utils/validation";
 
 const Register = () => {
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const[data, setData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  })
   const [error, setError] = useState("");
+
+  const onChangeHandler = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setData({ ...data, [name]: value });
+  }
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await registerUser({ name, email, password });
+      validateSignUpData(data);
+      const response = await registerUser(data);
       
       navigate("/login");
+
     } catch (error) {
       console.error("Registration failed:", error);
-      if (error.response) {
-    console.log("📥 Error response from backend:", error.response.data); // <--- ADD THIS
-
-    if (error.response.data.error) {
-      setError(error.response.data.error);
-    } else {
-      setError("Invalid input. Please check your details.");
-    }
-  } else {
-    setError("Something went wrong. Please try again later.");
-  }
+       if (error.response && error.response.data) {
+        if (error.response.data.error) {
+          setError(error.response.data.error);
+        } else {
+          setError("Invalid input. Please check your details.");
+        }
+      } else if (error.message) {
+        // ⚠️ This handles frontend validator errors
+        setError(error.message);
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
     }
   }
   return (
@@ -51,18 +64,18 @@ const Register = () => {
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Username
               </label>
               <div className="mt-1 relative">
                 <User className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
-                  id="username"
-                  name="username"
+                  id="name"
+                  name="name"
                   placeholder="Choose a username"
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
+                  onChange={onChangeHandler}
+                  value={data.name}
                   required
                   className="block w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                 />
@@ -79,8 +92,8 @@ const Register = () => {
                   id="email"
                   name="email"
                   placeholder="Enter your email"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
+                  onChange={onChangeHandler}
+                  value={data.email}
                   required
                   className="block w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                 />
@@ -99,15 +112,15 @@ const Register = () => {
                   id="password"
                   name="password"
                   placeholder="Create a password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
+                  onChange={onChangeHandler}
+                  value={data.password}
                   required
                   className="block w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                 />
               </div>
             </div>
 
-            {/* Confirm Password
+            {/* Confirm Password */}
             <div>
               <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
                 Confirm Password
@@ -116,14 +129,16 @@ const Register = () => {
                 <Lock className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                 <input
                   type="password"
-                  id="confirm-password"
-                  name="confirm-password"
+                  id="confirmPassword"
+                  name="confirmPassword"
                   placeholder="Confirm your password"
+                  onChange={onChangeHandler}
+                  value={data.confirmPassword}
                   required
                   className="block w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                 />
               </div>
-            </div> */}
+            </div> 
 
             {/* Submit */}
             <button
@@ -132,6 +147,12 @@ const Register = () => {
             >
               Create account
             </button>
+
+            {error && (
+              <div className="mt-4 rounded-md bg-red-100 p-3 text-sm text-red-700">
+                {error}
+              </div>
+      )}
           </form>
 
           {/* Footer */}

@@ -2,25 +2,48 @@ import { Mail, Lock } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/api";
+import { validateLoginData } from "../utils/validation";
 
 const Login = () => {
 
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [data, setData] = useState({
+    email: "",
+    password: ""
+  });
   const [error, setError] = useState("");
+
+  const onChangeHandler = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setData({ ...data, [name]: value });
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await loginUser({ email, password });
+      validateLoginData(data);
+      const response = await loginUser(data);
+      console.log("Login successful:", response.data);
+      // Save the token to localStorage (or handle it as needed)
       localStorage.setItem("token", response.data.token);
       navigate("/dashboard");
+      
     } catch (error) {
       console.error("Login failed:", error);
-      setError("Invalid email or password");
+      if (error.response && error.response.data) {
+        if (error.response.data.error) {
+          setError(error.response.data.error);
+        } else {
+          setError("Invalid input. Please check your details.");
+        }
+      } else if (error.message) {
+        setError(error.message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     }
   }
   return (
@@ -52,9 +75,9 @@ const Login = () => {
                   id="email"
                   name="email"
                   placeholder="Enter your email"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={onChangeHandler}
                   required
-                  value = {email}
+                  value = {data.email}
                   className="block w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                 />
               </div>
@@ -72,9 +95,9 @@ const Login = () => {
                   id="password"
                   name="password"
                   placeholder="Enter your password"
-                  onChange = {(e) => setPassword(e.target.value)}
+                  onChange = {onChangeHandler}
                   required
-                  value={password}
+                  value={data.password}
                   className="block w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                 />
               </div>
@@ -94,6 +117,13 @@ const Login = () => {
             >
               Sign in
             </button>
+
+            {error && (
+              <div className="mt-4 rounded-md bg-red-100 p-3 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+
           </form>
 
           {/* Footer */}
