@@ -1,7 +1,9 @@
 const express = require("express");
 const connectDB = require("./config/database")
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const app = express();
+
 
 // Import route modules
 const authRouter = require('./routes/auth');
@@ -10,8 +12,14 @@ const flashcardRouter = require('./routes/flashcard');
 const bookmarkRouter = require('./routes/bookmark');
 
 // Middleware setup 
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}))
+
 app.use(express.json());
 app.use(cookieParser());
+
 
 // Route mounting (MUST come after middleware)
 app.use('/api', authRouter);
