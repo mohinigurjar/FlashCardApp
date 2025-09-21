@@ -34,20 +34,20 @@ export const validateLoginData = (data) => {
     }
 
     }
-// export const validateFlashcardData = (data) => {
-//     const {question, answer} = data;
-//     if(!question){
-//         throw new Error("Please enter a question");
-//     }
-//     else if(!answer){
-//         throw new Error("Please enter an answer");
-//     }
-// }
 
-// export const validateEditProfileData = (data) => {
-//     const allowedEditFields = ["name", "email"];
-//     const isEditAllowed = Object.keys(data).every(field => 
-//         allowedEditFields.includes(field));
-//     return isEditAllowed;
-// }
 
+    export const validateFlashcardData = (data) => {
+    const {question, answer, tags, bookmarked} = data;  
+    if(!question){
+        throw new Error("Please enter question");
+    }
+    else if(!answer){
+        throw new Error("Please enter answer");
+    }
+    else if(tags && tags.length > 7){
+        throw new Error("Maximum 7 tags are allowed");
+    }
+    else if(bookmarked !== undefined && typeof bookmarked !== "boolean"){
+        throw new Error("Bookmarked must be a boolean");
+    }
+}
