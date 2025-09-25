@@ -1,18 +1,17 @@
-// src/components/Flashcard.jsx
 import React from "react";
 import { toggleBookmark } from "../services/api";
 
 const Flashcard = ({ card, onBookmarkToggle }) => {
-const { _id, question, answer, tags, isBookmarked } = card;
+  const { _id, question, answer, tags, bookmarked } = card;
 
-const handleBookmark = async () => {
-  try {
-    await toggleBookmark(_id);
-    onBookmarkToggle(); // Refresh data
-  } catch (err) {
-    console.error("Failed to toggle bookmark:", err);
-  }
-};
+  const handleBookmark = async () => {
+    try {
+      await toggleBookmark(_id);
+      if (onBookmarkToggle) onBookmarkToggle(); // optional callback
+    } catch (err) {
+      console.error("Failed to toggle bookmark:", err);
+    }
+  };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-5 hover:shadow-lg transition">
@@ -22,14 +21,14 @@ const handleBookmark = async () => {
         <strong>Tags:</strong> {tags?.join(", ")}
       </p>
       <button
-        onClick={toggleBookmark}
+        onClick={handleBookmark}
         className={`px-3 py-1 rounded text-sm font-medium ${
-          isBookmarked
+          bookmarked
             ? "bg-yellow-400 text-black hover:bg-yellow-500"
             : "bg-gray-200 text-gray-800 hover:bg-gray-300"
         }`}
       >
-        {isBookmarked ? "★ Bookmarked" : "☆ Bookmark"}
+        {bookmarked ? "★ Bookmarked" : "☆ Bookmark"}
       </button>
     </div>
   );
