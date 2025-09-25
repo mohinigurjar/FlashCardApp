@@ -50,7 +50,7 @@ const AddFlashcard = () => {
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4 text-center">➕ Add New Flashcard</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center">Add New Flashcard</h2>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
       {success && <p className="text-green-500 mb-4">{success}</p>}
@@ -104,7 +104,7 @@ const AddFlashcard = () => {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="w-full rounded-md bg-gradient-to-r from-indigo-500 to-purple-500 py-2 px-4 text-sm font-semibold text-white shadow-sm hover:from-indigo-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
         >
           Save Flashcard
         </button>
