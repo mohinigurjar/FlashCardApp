@@ -6,7 +6,7 @@ const { userAuth } = require("../middlewares/auth");
 //get all bookmarked flashcards 
 bookmarkRouter.get('/flashcard/bookmarked', userAuth, async(req, res) => {
     try{
-        const bookmarkedCards = await Card.find({bookmarked: true});
+        const bookmarkedCards = await Card.find({bookmarked: true, createdBy: req.user._id});
         res.send(bookmarkedCards);
     }
     catch(error){
@@ -18,7 +18,7 @@ bookmarkRouter.get('/flashcard/bookmarked', userAuth, async(req, res) => {
 bookmarkRouter.get('/flashcard/:id/bookmark', userAuth, async(req, res) => {
     try{
         const cardId = req.params.id;
-        const card = await Card.findById(cardId);
+        const card = await Card.findById(cardId, { createdBy: req.user._id });
         
         if(!card){
             return res.status(404).send("Flashcard not found");
@@ -36,7 +36,7 @@ bookmarkRouter.get('/flashcard/:id/bookmark', userAuth, async(req, res) => {
 bookmarkRouter.patch('/flashcard/:id/bookmark', userAuth, async(req, res) => {
     try{
         const cardId = req.params.id;
-        const card = await Card.findById(cardId);
+        const card = await Card.findById(cardId, { createdBy: req.user._id });
         
         if(!card){
             return res.status(404).send("Flashcard not found");

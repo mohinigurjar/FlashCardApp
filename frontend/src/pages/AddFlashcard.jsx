@@ -26,9 +26,18 @@ const AddFlashcard = () => {
     setError("");
     setSuccess("");
 
+
+    //prevent tags from storing as string
+    const processedData = {
+      ...data,
+      tags: data.tags
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0)
+    };
     try {
-      validateFlashcardData(data);
-      const response = await addFlashcard(data);
+      validateFlashcardData(processedData);
+      const response = await addFlashcard(processedData);
       console.log("Flashcard added successfully:", response.data);
       setSuccess("Flashcard added successfully!");
       setTimeout(() => navigate("/dashboard"), 1000); // delay for message
