@@ -81,7 +81,7 @@ const AddFlashcard = () => {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1">Tag (optional)</label>
+          <label className="block font-semibold mb-1">Tags</label>
           <input
             type="text"
             name="tags"

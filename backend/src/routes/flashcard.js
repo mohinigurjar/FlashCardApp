@@ -9,7 +9,13 @@ flashcardRouter.post('/flashcard', userAuth, async(req, res) => {
     try{
         validateFlashcardData(req);
         const {question, answer, tags, bookmarked} = req.body;
-        const flashcard = new Card({question, answer, tags, bookmarked});
+        const flashcard = new Card({
+            question,
+            answer,
+            tags,
+            bookmarked,
+            createdBy: req.user._id
+        });
         await flashcard.save();
         // console.log(newCard);
         res.send("New Flashcard added")
@@ -21,7 +27,7 @@ flashcardRouter.post('/flashcard', userAuth, async(req, res) => {
 //get all flashcards
 flashcardRouter.get('/flashcard', userAuth, async(req, res) => {
     try{
-        const allCards = await Card.find({});
+        const allCards = await Card.find({ createdBy: req.user._id });
         res.send(allCards);
     }catch(error){
         res.status(404).send("Flashcards not found");
@@ -32,7 +38,7 @@ flashcardRouter.get('/flashcard', userAuth, async(req, res) => {
 flashcardRouter.get('/flashcard/:id', userAuth, async(req, res) => {
     try{
         const cardId = req.params.id;
-        const card = await Card.findById(cardId);
+        const card = await Card.findById({_id: cardId, createdBy: req.user._id});
         if(!card){
             throw new Error("Flashcard not found");
         }

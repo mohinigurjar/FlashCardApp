@@ -19,10 +19,16 @@ const cardSchema = mongoose.Schema({
     tags: {
         type: [String],
         required: true,
+        maxItems: 7,
         validate(value){
             if(value.length > 7)
                 throw new Error("Maximum 7 tags are allowed");
         }   
+     },
+     createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "User",
      },
     
 }, 
