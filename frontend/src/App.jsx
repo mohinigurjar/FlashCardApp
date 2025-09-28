@@ -12,7 +12,10 @@ import Dashboard from './pages/Dashboard';
 import AddFlashcard from './pages/AddFlashcard';
 import Bookmarked from './pages/Bookmarked';
 import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
+import ResetPassword from './pages/ResetPassword';
 import TagFlashcards from './pages/TagFlashcards';
+
 
 
 function AppComponent() {
@@ -32,6 +35,8 @@ function AppComponent() {
           <Route path="/bookmarked" element={<Bookmarked />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/tags/:tagName" element={<TagFlashcards />} />
+          <Route path="/profile/edit" element={<EditProfile />} />
+          <Route path="/profile/password" element={<ResetPassword />} />
         </Routes>
       </main>
     </div>

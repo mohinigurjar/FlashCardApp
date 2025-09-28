@@ -73,7 +73,7 @@ const validateFlashcardData = (req) => {
     }
 }
 
-validateEditProfileData = (req) => {
+const validateEditProfileData = (req) => {
     const allowedEditFields = ["name", "email"];
 
     const isEditAllowed = Object.keys(req.body).every(field => 

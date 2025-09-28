@@ -10,6 +10,7 @@ API.interceptors.request.use((req) => {
     if (token) {
         req.headers.Authorization = `Bearer ${token}`;
     } 
+    console.log(`Axios request: ${req.method.toUpperCase()} ${req.baseURL}${req.url}`);
     return req;
 })
 
