@@ -82,8 +82,16 @@ const validateEditProfileData = (req) => {
     return isEditAllowed;
 }
 
+const validatePasswordResetData = (req) => {
+    const {oldPassword, newPassword} = req.body;
+    if(!validator.isStrongPassword(newPassword)){
+        throw new Error("Enter valid new password");
+    }
+}
+
 module.exports = {
     validateSignUpData,
     validateFlashcardData,
-    validateEditProfileData
+    validateEditProfileData,
+    validatePasswordResetData
 }

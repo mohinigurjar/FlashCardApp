@@ -10,7 +10,7 @@ API.interceptors.request.use((req) => {
     if (token) {
         req.headers.Authorization = `Bearer ${token}`;
     } 
-    console.log(`Axios request: ${req.method.toUpperCase()} ${req.baseURL}${req.url}`);
+    // console.log(`Axios request: ${req.method.toUpperCase()} ${req.baseURL}${req.url}`);
     return req;
 })
 
@@ -36,5 +36,23 @@ export const getBookmarkStatus = (id) => API.get(`/flashcard/${id}/bookmark`);
 
 //user profile services 
 export const getUserProfile = () => API.get('/profile');
-export const editUserProfile = (data) => API.put('/profile/edit', data);  
+export const editUserProfile = (data) => API.patch('/profile/edit', data);  
 export const resetPassword = (data) => API.post('/profile/password', data);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

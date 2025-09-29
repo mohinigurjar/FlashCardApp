@@ -39,18 +39,13 @@ const EditProfile = () => {
         setError("");
         setSuccess(""); 
         try {
-            if(!validateEditProfileData(userData)){
-                
-                console.error("Invalid input data:", userData);
-                setError("Invalid input data.");
-                // return;
-            }
+            validateEditProfileData(userData)
             const response = await editUserProfile(userData);
             console.log("Profile updated successfully:", response.data);
             setSuccess("Profile updated successfully!");
             setTimeout(() => navigate("/profile"), 1000); // Redirect after a short delay
         } catch (error) {
-            console.error("Request failed:", error.config.url);
+            console.error("Request failed:", error.config?.url);
             console.error("Error updating profile:", error);
             if (error.response && error.response.data && error.response.data.error) {
                 setError(error.response.data.error);

@@ -5,7 +5,8 @@ import { validateSignUpData } from '../utils/validation';
 
 const ResetPassword = () => {
     const [form, setForm] = useState({
-        password: "",
+        oldPassword: "",
+        newpassword: "",
         confirmPassword: ""
     });
     const [error, setError] = useState("");
@@ -43,6 +44,18 @@ const ResetPassword = () => {
             {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
             {success && <p className="text-green-500 mb-4 text-center">{success}</p>}
             <form onSubmit={handleResetPassword} className="space-y-4">
+                <div>
+                    <label className="block text-sm font-medium mb-1" htmlFor="password">Current Password</label>
+                    <input
+                        type="password"
+                        id="oldpassword"
+                        name="oldpassword"
+                        value={form.oldPassword}
+                        onChange={onChangeHandler}
+                        className="w-full border border-gray-300 p-2 rounded"
+                        required
+                    />
+                </div>
                 <div>
                     <label className="block text-sm font-medium mb-1" htmlFor="password">New Password</label>
                     <input
